@@ -13,14 +13,14 @@ class Command {
 
     /**
      * A class containing methods for generating slash command options
-     * @class Option
+     * @class CommandOption
      */
 
     /**
      * A function for generating a new command option
-     * @returns {Option} a new option class instance
+     * @returns {CommandOption} a new option class instance
      */
-    this.createOption = () => new Option();
+    this.createOption = () => new CommandOption();
 
     /**
      * A function that finalizes an option and adds it to the command structure
@@ -28,17 +28,18 @@ class Command {
      */
     this.finalizeOption = (option) => {
       if (!option) throw SyntaxError("Missing parameter: option!");
-      if (!(option instanceof Option))
+      if (!(option instanceof CommandOption))
         throw TypeError("Parameter: option is not an instance of Option!");
 
       if (!this.json.options) this.json.options = [];
 
       this.json.options.push(option.json);
+      return this
     };
 
     /**
      * A function that adds multiple options to the command structure
-     * @param  {...Option} options a list of command option classes
+     * @param  {...CommandOption} options a list of command option classes
      */
     this.finalizeOptions = (...options) => {
       if (!options) throw SyntaxError("Missing parameter: options!");
@@ -46,7 +47,7 @@ class Command {
       if (!Array.isArray(options))
         throw TypeError("Parameter: options is not an array!");
 
-      if (options.some((o) => !o instanceof Option))
+      if (options.some((o) => !o instanceof CommandOption))
         throw TypeError(
           "An option in the options array is not an instance of the Option class!"
         );
@@ -56,6 +57,7 @@ class Command {
       options = options.flat();
 
       this.json.options.push(...options.map((option) => option.json));
+      return this
     };
 
     /**
@@ -70,6 +72,7 @@ class Command {
         throw RangeError("The name argument must not exceed 50 characters!");
 
       this.json.name = name;
+      return this
     };
 
     /**
@@ -86,6 +89,7 @@ class Command {
         );
 
       this.json.description = description;
+      return this
     };
 
     /**
@@ -98,9 +102,9 @@ class Command {
 
 /**
  * A class for generating options for slash commands
- * @class Option
+ * @class CommandOption
  */
-class Option {
+export class CommandOption {
   constructor() {
     /**
      * The option structure
@@ -135,6 +139,7 @@ class Option {
         throw TypeError("The type argument is not a valid type!");
 
       this.json.type = type.toString();
+      return this
     };
 
     /**
@@ -149,6 +154,7 @@ class Option {
         throw RangeError("The name argument must not exceed 50 characters!");
 
       this.json.name = name;
+      return this
     };
 
     /**
@@ -165,6 +171,7 @@ class Option {
         );
 
       this.json.description = description;
+      return this
     };
 
     /**
@@ -179,6 +186,7 @@ class Option {
         throw RangeError("The value argument must not exceed 200 characters!");
 
       this.json.value = value;
+      return this
     };
 
     /**
@@ -190,6 +198,7 @@ class Option {
         throw TypeError("The 'required' argument must be of type boolean!");
 
       this.json.required = required;
+      return this
     };
 
     /**
@@ -222,11 +231,12 @@ class Option {
         value: options.value,
         required: options.required,
       });
+      return this
     };
   }
 }
 
 module.exports = {
   Command,
-  Option,
+  Option: CommandOption,
 };
